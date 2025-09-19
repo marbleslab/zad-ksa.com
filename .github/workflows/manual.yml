@@ -1,0 +1,28 @@
+name: Deploy zad-ksa.com to EC2
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_SSH_USER }}   # deployer
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Deploying zad-ksa.com..."
+            cd /var/www/zad-ksa.com
+
+            # Fix permissions if needed
+            sudo chown -R deployer:deployer /var/www/zad-ksa.com || true
+
+            git fetch origin master
+            git reset --hard origin/master
+            echo "zad-ksa.com deployment complete!"
