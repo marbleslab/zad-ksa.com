@@ -1,0 +1,8 @@
+[29-Jun-2025 07:36:05 America/Boise] PHP Fatal error:  Uncaught Error: Class "IXR_Client" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/IXR/class-IXR-clientmulticall.php:8
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/IXR/class-IXR-clientmulticall.php on line 8
+[08-Jul-2025 21:34:27 America/Boise] PHP Fatal error:  Uncaught Error: Class "IXR_Client" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/IXR/class-IXR-clientmulticall.php:8
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/IXR/class-IXR-clientmulticall.php on line 8

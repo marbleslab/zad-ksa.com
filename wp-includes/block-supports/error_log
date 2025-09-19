@@ -1,0 +1,40 @@
+[29-Jun-2025 07:35:36 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/border.php:170
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/border.php on line 170
+[29-Jun-2025 07:36:14 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/align.php:59
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/align.php on line 59
+[29-Jun-2025 07:36:17 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/typography.php:684
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/typography.php on line 684
+[29-Jun-2025 07:36:35 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/colors.php:138
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/colors.php on line 138
+[29-Jun-2025 07:36:40 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/spacing.php:83
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/spacing.php on line 83
+[08-Jul-2025 21:33:43 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/border.php:170
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/border.php on line 170
+[08-Jul-2025 21:34:41 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/align.php:59
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/align.php on line 59
+[08-Jul-2025 21:34:45 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/typography.php:684
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/typography.php on line 684
+[08-Jul-2025 21:35:13 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/colors.php:138
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/colors.php on line 138
+[08-Jul-2025 21:35:19 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Block_Supports" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/spacing.php:83
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/block-supports/spacing.php on line 83

@@ -1,0 +1,8 @@
+[29-Jun-2025 07:36:00 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_REST_Posts_Controller" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php:17
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php on line 17
+[08-Jul-2025 21:34:20 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_REST_Posts_Controller" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php:17
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php on line 17

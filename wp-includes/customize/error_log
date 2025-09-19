@@ -1,0 +1,48 @@
+[29-Jun-2025 07:34:54 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Panel" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-themes-panel.php:17
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-themes-panel.php on line 17
+[29-Jun-2025 07:35:51 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Panel" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menus-panel.php:19
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menus-panel.php on line 19
+[29-Jun-2025 07:35:55 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Setting" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-filter-setting.php:19
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-filter-setting.php on line 19
+[29-Jun-2025 07:35:58 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Control" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-location-control.php:19
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-location-control.php on line 19
+[29-Jun-2025 07:36:21 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Section" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-section.php:19
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-section.php on line 19
+[29-Jun-2025 07:36:33 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Setting" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-item-setting.php:20
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-item-setting.php on line 20
+[08-Jul-2025 21:32:42 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Panel" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-themes-panel.php:17
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-themes-panel.php on line 17
+[08-Jul-2025 21:34:06 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Panel" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menus-panel.php:19
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menus-panel.php on line 19
+[08-Jul-2025 21:34:14 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Setting" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-filter-setting.php:19
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-filter-setting.php on line 19
+[08-Jul-2025 21:34:18 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Control" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-location-control.php:19
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-location-control.php on line 19
+[08-Jul-2025 21:34:51 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Section" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-section.php:19
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-section.php on line 19
+[08-Jul-2025 21:35:09 America/Boise] PHP Fatal error:  Uncaught Error: Class "WP_Customize_Setting" not found in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-item-setting.php:20
+Stack trace:
+#0 {main}
+  thrown in /home2/rmdxcdmy/public_html/zadksa/wp-includes/customize/class-wp-customize-nav-menu-item-setting.php on line 20
