@@ -10,40 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ First test the SSH connection
-      - name: Test SSH connection
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script_stop: true
-          script: |
-            echo "✅ Connected as $(whoami) on $(hostname)"
-            ls -la /var/www
-
-      - name: Debug key formatting
+      - name: Write SSH key
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
-          ls -la key.pem
-          head -5 key.pem
-            
+          chmod 600 key.pem
 
-      # 2️⃣ If that works, then run the deployment
+      - name: Test SSH connection
+        run: |
+          ssh -i key.pem -o StrictHostKeyChecking=no deployer@${{ secrets.EC2_HOST }} "echo ✅ Connected as $(whoami) on $(hostname)"
+
       - name: Deploy zad-ksa.com
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script_stop: true
-          script: |
-            echo "Deploying zad-ksa.com..."
+        run: |
+          ssh -i key.pem -o StrictHostKeyChecking=no deployer@${{ secrets.EC2_HOST }} << 'EOF'
             cd /var/www/zad-ksa.com
-            sudo chown -R deployer:deployer /var/www/zad-ksa.com || true
-            git remote set-url origin git@github.com-zad:marbleslab/zad-ksa.com.git
             git fetch origin master
             git reset --hard origin/master
             echo "zad-ksa.com deployment complete!"
+          EOF
