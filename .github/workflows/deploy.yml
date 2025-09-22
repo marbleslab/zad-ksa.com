@@ -23,6 +23,13 @@ jobs:
             echo "✅ Connected as $(whoami) on $(hostname)"
             ls -la /var/www
 
+      - name: Debug key formatting
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          ls -la key.pem
+          head -5 key.pem
+            
+
       # 2️⃣ If that works, then run the deployment
       - name: Deploy zad-ksa.com
         uses: appleboy/ssh-action@v1.2.0
