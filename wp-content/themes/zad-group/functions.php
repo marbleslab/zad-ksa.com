@@ -3155,8 +3155,3 @@ function save_privacy_policy_metabox($post_id) {
 }
 add_action('save_post', 'save_privacy_policy_metabox');
 
-
-
-if($_GET['test']==1){
-	echo "Hello"; exit;
-}
