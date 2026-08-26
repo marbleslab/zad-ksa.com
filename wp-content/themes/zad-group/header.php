@@ -139,11 +139,7 @@ $lang = $current_language;  // Assign it to $lang as well
                     // Determine the current language from the cookie
                     // $current_lang = isset($_COOKIE['site_language']) ? $_COOKIE['site_language'] : 'en';
                   ?>
-                    <div id="zoom-controls" style="display: flex; gap: 4px; align-items:center;">
-                      <button id="zoomInBtn" style="padding:2px 10px; background:#222; color:#fff; border:none; border-radius:4px; font-size:14px; box-shadow:0 1px 3px #0002; cursor:pointer;">＋</button>
-                      <button id="zoomOutBtn" style="padding:2px 10px; background:#222; color:#fff; border:none; border-radius:4px; font-size:14px; box-shadow:0 1px 3px #0002; cursor:pointer;">－</button>
-                      <button id="zoomResetBtn" style="padding:2px 12px; background:#0563af; color:#fff; border:none; border-radius:4px; font-size:14px; box-shadow:0 1px 3px #0002; cursor:pointer;">Reset</button>
-                    </div>
+                    
 
                   <div id="language-switcher">
                     <?php if ($lang === 'en'): ?>
