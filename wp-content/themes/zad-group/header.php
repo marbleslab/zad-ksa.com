@@ -1,5 +1,5 @@
 <?php
-echo "aaaaaaaa";exit;
+
 /**
  * The header for our theme
  *
