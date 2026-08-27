@@ -1,5 +1,4 @@
 <?php
-echo "aaaaaaaa";exit;
 /**
  * zadgroup functions and definitions
  *
