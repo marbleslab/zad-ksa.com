@@ -139,7 +139,14 @@ add_action( 'widgets_init', 'zag_group_widgets_init' );
  */
 function zag_group_scripts() {
 	// Enqueue styles
-wp_enqueue_style( 'zag-group-style', get_stylesheet_uri(), array(), _S_VERSION );
+$theme_style_path = get_stylesheet_directory() . '/style.css';
+$theme_style_version = file_exists($theme_style_path) ? filemtime($theme_style_path) : _S_VERSION;
+$zad_style_path = get_template_directory() . '/assets/css/style.css';
+$zad_style_version = file_exists($zad_style_path) ? filemtime($zad_style_path) : _S_VERSION;
+$zad_main_path = get_template_directory() . '/assets/js/main.js';
+$zad_main_version = file_exists($zad_main_path) ? filemtime($zad_main_path) : _S_VERSION;
+
+wp_enqueue_style( 'zag-group-style', get_stylesheet_uri(), array(), $theme_style_version );
 wp_enqueue_style( 'bootstrap-icons', "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css", array(), _S_VERSION );
 if (isset($_COOKIE['site_language']) && $_COOKIE['site_language'] == 'ar') {
 	// Load RTL stylesheet for Arabic
@@ -152,7 +159,7 @@ if (isset($_COOKIE['site_language']) && $_COOKIE['site_language'] == 'ar') {
 // Uncomment this line if you need to load the RTL version
 // wp_enqueue_style( 'zad-bootstrap-rtl', get_template_directory_uri() . '/assets/css/bootstrap.rtl.min.css', array(), _S_VERSION );
 wp_enqueue_style( 'swiper-style', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css', array(), _S_VERSION ); // Swiper CSS
-wp_enqueue_style( 'zad-style', get_template_directory_uri() . '/assets/css/style.css', array(), _S_VERSION );
+wp_enqueue_style( 'zad-style', get_template_directory_uri() . '/assets/css/style.css', array(), $zad_style_version );
 
 wp_style_add_data( 'zag-group-style', 'rtl', 'replace' );
 
@@ -160,7 +167,7 @@ wp_style_add_data( 'zag-group-style', 'rtl', 'replace' );
 wp_enqueue_script( 'zag-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 wp_enqueue_script( 'zad-bootstrap-bundle', get_template_directory_uri() . '/assets/js/bootstrap.bundle.min.js', array(), _S_VERSION, true );
 wp_enqueue_script( 'swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', array(), _S_VERSION, true );
-wp_enqueue_script( 'zad-main', get_template_directory_uri() . '/assets/js/main.js', array(), _S_VERSION, true );
+wp_enqueue_script( 'zad-main', get_template_directory_uri() . '/assets/js/main.js', array('swiper'), $zad_main_version, true );
 
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
