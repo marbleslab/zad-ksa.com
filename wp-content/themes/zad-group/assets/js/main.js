@@ -15,8 +15,9 @@ if (typeof Swiper !== "undefined" && document.querySelector(".history-main-swipe
   ).length;
 
   var historySwiper = new Swiper(historySliderElement, {
-    slidesPerView: "auto",
-    spaceBetween: 44,
+    slidesPerView: 1,
+    slidesPerGroup: 1,
+    spaceBetween: 0,
     loop: historySlideCount > 1,
     speed: 900,
     watchOverflow: true,
