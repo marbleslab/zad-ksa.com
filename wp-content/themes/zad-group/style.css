@@ -71,6 +71,292 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* =========================================================
+   2026 HOME BRAND SLIDERS
+   Marble Slab (pink), Meez (green), Blak Peco (gray)
+   ========================================================= */
+.home-sliders-grid {
+  --brand-slider-height: 360px;
+}
+
+.home-sliders-grid .brand-slider-section {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.home-sliders-grid .brand-slider.carousel,
+.home-sliders-grid .brand-slider .carousel-inner,
+.home-sliders-grid .brand-slider .carousel-item {
+  width: 100% !important;
+  height: var(--brand-slider-height) !important;
+}
+
+.home-sliders-grid .brand-slider .carousel-inner,
+.home-sliders-grid .brand-slider .carousel-item {
+  border-radius: 28px !important;
+  overflow: hidden !important;
+}
+
+.brand-slide-card {
+  display: grid;
+  grid-template-columns: minmax(0, 45%) minmax(0, 55%);
+  width: 100%;
+  height: 100%;
+  color: var(--brand-slide-ink);
+  background: var(--brand-slide-bg);
+}
+
+.brand-slide-media {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.brand-slide-image,
+.brand-slide-image-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 19px;
+}
+
+.brand-slide-image {
+  object-fit: contain;
+  object-position: center;
+}
+
+.brand-slide-image-placeholder {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.brand-slide-copy {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 24px 58px;
+  overflow: auto;
+  color: var(--brand-slide-ink);
+  scrollbar-width: thin;
+}
+
+.brand-slide-logo {
+  display: block;
+  width: auto;
+  max-width: 135px;
+  height: 44px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+[lang="ar"] .brand-slide-logo {
+  object-position: right center;
+}
+
+.brand-slide-copy h3 {
+  margin: 0;
+  color: inherit;
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 750;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.brand-slide-copy p {
+  margin: 0;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.brand-slide-description {
+  font-weight: 600;
+}
+
+.brand-slide-subdescription {
+  opacity: 0.88;
+}
+
+.brand-slide-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 12px;
+}
+
+.brand-slide-stat {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+  padding-left: 9px;
+  border-left: 3px solid var(--brand-slide-accent);
+}
+
+[lang="ar"] .brand-slide-stat {
+  padding-right: 9px;
+  padding-left: 0;
+  border-right: 3px solid var(--brand-slide-accent);
+  border-left: 0;
+}
+
+.brand-slide-stat strong {
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.brand-slide-stat span {
+  color: inherit;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.brand-slide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 14px;
+  align-items: center;
+}
+
+.brand-slide-button,
+.brand-slide-social {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.brand-slide-button {
+  padding: 9px 14px;
+  color: #fff;
+  background: var(--brand-slide-accent);
+}
+
+.brand-slide-social {
+  color: var(--brand-slide-ink);
+}
+
+.brand-slide-button:hover {
+  color: #fff;
+  filter: brightness(0.92);
+}
+
+.brand-slide-social:hover {
+  color: var(--brand-slide-accent);
+}
+
+.brand-slider-controls {
+  position: absolute;
+  z-index: 5;
+  right: 18px;
+  bottom: 15px;
+  left: calc(45% + 18px);
+  display: flex;
+  height: 34px;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+[lang="ar"] .brand-slider-controls {
+  right: calc(45% + 18px);
+  left: 18px;
+}
+
+.home-sliders-grid .brand-slider .carousel-indicators {
+  position: static;
+  display: flex;
+  margin: 0 !important;
+  gap: 5px;
+  pointer-events: auto;
+}
+
+.home-sliders-grid .brand-slider .carousel-indicators [data-bs-target] {
+  width: 7px !important;
+  height: 7px !important;
+  margin: 0 !important;
+  border: 0;
+  border-radius: 50%;
+  background: var(--brand-slide-ink);
+  opacity: 0.32;
+}
+
+.home-sliders-grid .brand-slider .carousel-indicators .active {
+  width: 20px !important;
+  border-radius: 8px;
+  opacity: 1;
+}
+
+.brand-slider-arrows {
+  position: relative;
+  display: flex;
+  width: 76px;
+  height: 34px;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.home-sliders-grid .brand-slider .carousel-control-prev,
+.home-sliders-grid .brand-slider .carousel-control-next {
+  position: static;
+  width: 34px !important;
+  height: 34px !important;
+  color: var(--brand-slide-ink) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 14px !important;
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  .home-sliders-grid {
+    --brand-slider-height: auto;
+  }
+
+  .home-sliders-grid .brand-slider.carousel,
+  .home-sliders-grid .brand-slider .carousel-inner,
+  .home-sliders-grid .brand-slider .carousel-item {
+    height: auto !important;
+    min-height: 540px;
+  }
+
+  .brand-slide-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: 235px minmax(305px, auto);
+    min-height: 540px;
+  }
+
+  .brand-slide-media {
+    padding: 12px;
+  }
+
+  .brand-slide-copy {
+    padding: 22px 20px 60px;
+    overflow: visible;
+  }
+
+  .brand-slider-controls,
+  [lang="ar"] .brand-slider-controls {
+    right: 18px;
+    bottom: 14px;
+    left: 18px;
+  }
+}
+
 /* Sections
 	 ========================================================================== */
 
