@@ -30,13 +30,10 @@ $lang = $current_language;
  
   $about_bottom_banner = null;
 
-  // The About hero can now use a dedicated full-width background image.
-  // Keep the bundled artwork as a safe fallback for existing installations.
-  $about_hero_background = get_post_meta($page_id, '_about_hero_background_image', true);
-  $about_hero_has_custom_background = !empty($about_hero_background);
-  if (empty($about_hero_background)) {
-      $about_hero_background = get_template_directory_uri() . '/assets/images/aboutHeroImg.png';
-  }
+  // The dedicated About image is now used as the full-width top banner.
+  // Existing banner-manager content remains the fallback, so no migration is
+  // required on sites that have not filled the dedicated field yet.
+  $about_top_banner = get_post_meta($page_id, '_about_hero_background_image', true);
 
   foreach ($banners as $banner) {
      
@@ -46,28 +43,36 @@ $lang = $current_language;
       
   }
 
+  if (empty($about_top_banner)) {
+      $about_top_banner = !empty($about_bottom_banner)
+          ? $about_bottom_banner
+          : get_template_directory_uri() . '/assets/images/cornerBannerimg.png';
+  }
+
 ?>
 
 
+  <section class="about-full-banner position-relative">
+    <img
+      src="<?php echo esc_url($about_top_banner); ?>"
+      alt="<?php echo esc_attr(get_the_title()); ?>"
+      class="about-full-banner__image"
+    />
+    <div class="about-full-banner__overlay">
+      <h1 class="text-center text-black fw-bold cornerimgText">
+        <?php echo esc_html(custom_translate('from_all_passion')); ?><br />
+        <span class="text-primary"><?php echo esc_html(custom_translate('be_part_our_story')); ?></span>
+      </h1>
+    </div>
+  </section>
+
 <?php if ( is_active_sidebar( 'below-sidebar' ) ) : ?>
 
-    <div
-      id="secondary-below-sidebar"
-      class="widget-area<?php echo $about_hero_has_custom_background ? ' has-custom-about-hero-background' : ''; ?>"
-      style="--about-hero-background-image: url('<?php echo esc_url($about_hero_background); ?>');"
-    >
+    <div id="secondary-below-sidebar" class="widget-area about-mission-cards">
         <?php dynamic_sidebar( 'below-sidebar' ); ?>
     </div><!-- #secondary-below-sidebar -->
 <?php endif; ?>
 
-
-  <section class="position-relative">
-    <h1 class="text-center text-black fw-bold cornerimgText">
-    <?php echo custom_translate('from_all_passion'); ?><br />
-      <span class="text-primary"><?php echo custom_translate('be_part_our_story'); ?></span>
-    </h1>
-    <img src="<?php if (!empty($about_bottom_banner)) { echo esc_url($about_bottom_banner); }?>" alt="" class="w-100" />
-  </section>
   <section class="timeline-slider bg-black py-5">
     <div class="container text-center pb-4 pt-5">
       <p class="text-yellow fs-5 fw-bold"> <?php echo esc_html( $our_history_small_title_field_content); ?></p>
@@ -78,18 +83,8 @@ $lang = $current_language;
         // Get the meta box data for the current page
         $slides = get_post_meta(get_the_ID(), 'timeline_slider_images', true);
         if (!empty($slides)) : ?>
-          <div class="swiper mySwiper pt-5" aria-label="<?php echo esc_attr($our_history_small_title_field_content); ?>">
-            <div class="timslideControl border-top border-color-orange">
-              <div class="container position-relative">
-                <button type="button" class="swiper-button-next history-main-next arrow" aria-label="<?php esc_attr_e('Next history item', 'zag-group'); ?>">
-                  <i class="bi bi-arrow-right"></i>
-                </button>
-                <button type="button" class="swiper-button-prev history-main-prev arrow" aria-label="<?php esc_attr_e('Previous history item', 'zag-group'); ?>">
-                  <i class="bi bi-arrow-left"></i>
-                </button>
-              </div>
-            </div>
-            <div class="swiper-wrapper container p-0">
+          <div class="swiper mySwiper history-main-swiper" aria-label="<?php echo esc_attr($our_history_small_title_field_content); ?>">
+            <div class="swiper-wrapper history-main-wrapper">
             <?php foreach ($slides as $slide) :
               // Backward compatibility: move the old single image into the new
               // images array at render time without requiring a data migration.
@@ -105,57 +100,41 @@ $lang = $current_language;
                   ? $slide['title_ar']
                   : ($slide['title'] ?? '');
             ?>
-              <div class="swiper-slide">
-                <div
-                  class="row pt-5 align-items-center justify-content-center w-100 mx-auto"
-                >
-                  <div class="col-3 yearline px-0">
+              <div class="swiper-slide history-card-slide" style="--history-image-count: <?php echo max(1, count($history_images)); ?>;">
+                <article class="history-card">
+                  <div class="history-year-rail">
                     <h1 class="m-0 text-primary text-center"><?php echo esc_html($slide['year']); ?></h1>
                   </div>
-                  <div class="col-sm-6 col-8 px-0">
-                    <?php if (!empty($history_images)) : ?>
-                      <div class="swiper historyImageSwiper">
-                        <div class="swiper-wrapper">
-                          <?php foreach ($history_images as $history_image) : ?>
-                            <div class="swiper-slide">
-                              <img
-                                src="<?php echo esc_url($history_image); ?>"
-                                alt="<?php echo esc_attr($history_title); ?>"
-                                class="d-block timeimag"
-                                loading="lazy"
-                              />
-                            </div>
-                          <?php endforeach; ?>
-                        </div>
 
-                        <?php if (count($history_images) > 1) : ?>
-                          <button type="button" class="history-image-nav history-image-prev" aria-label="<?php esc_attr_e('Previous image', 'zag-group'); ?>">
-                            <i class="bi bi-chevron-left"></i>
-                          </button>
-                          <button type="button" class="history-image-nav history-image-next" aria-label="<?php esc_attr_e('Next image', 'zag-group'); ?>">
-                            <i class="bi bi-chevron-right"></i>
-                          </button>
-                          <div class="swiper-pagination history-image-pagination"></div>
-                        <?php endif; ?>
+                  <div class="history-card-body">
+                    <?php if (!empty($history_images)) : ?>
+                      <div class="history-images-row" aria-label="<?php echo esc_attr($history_title); ?>">
+                        <?php foreach ($history_images as $history_image) : ?>
+                          <figure class="history-image-tile">
+                            <img
+                              src="<?php echo esc_url($history_image); ?>"
+                              alt="<?php echo esc_attr($history_title); ?>"
+                              class="timeimag"
+                              loading="lazy"
+                            />
+                          </figure>
+                        <?php endforeach; ?>
                       </div>
                     <?php endif; ?>
-                  </div>
-                  <div class="col-sm-4 col-3"></div>
-                  <div class="col-sm-6 col-8 ps-0">
-                    <div class="content pt-3">
-                      <h4 class="text-white fw-bold fs-24"> <?php echo esc_html($history_title); ?></h4>
+
+                    <div class="content history-card-content">
+                      <h4 class="text-white fw-bold fs-24"><?php echo esc_html($history_title); ?></h4>
                       <p class="text-white fs-18">
-                      
-                      <?php
-                        $history_description = ($current_language === 'ar' && !empty($slide['description_ar']))
-                            ? $slide['description_ar']
-                            : ($slide['description'] ?? '');
-                        echo esc_html($history_description);
-                      ?>
+                        <?php
+                          $history_description = ($current_language === 'ar' && !empty($slide['description_ar']))
+                              ? $slide['description_ar']
+                              : ($slide['description'] ?? '');
+                          echo esc_html($history_description);
+                        ?>
                       </p>
                     </div>
                   </div>
-                </div>
+                </article>
               </div>
               <?php endforeach; ?>
             </div>
