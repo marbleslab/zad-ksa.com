@@ -2,6 +2,8 @@
 /**
  * Template Name: Home-Template
  */
+
+echo "Control is here";
 get_header();
 
 global $current_language;
