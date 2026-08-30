@@ -19,21 +19,20 @@ if (typeof Swiper !== "undefined" && document.querySelector(".history-main-swipe
     slidesPerGroup: 1,
     spaceBetween: 0,
     loop: historySlideCount > 1,
-    speed: 900,
+    loopAdditionalSlides: historySlideCount,
+    speed: 10000,
     watchOverflow: true,
-    grabCursor: historySlideCount > 1,
+    allowTouchMove: false,
+    grabCursor: false,
+    loopPreventsSliding: false,
     autoplay:
       historySlideCount > 1
         ? {
-            delay: 4500,
+            delay: 0,
             disableOnInteraction: false,
-            pauseOnMouseEnter: true,
+            pauseOnMouseEnter: false,
           }
         : false,
-    keyboard: {
-      enabled: true,
-      onlyInViewport: true,
-    },
   });
 }
 
