@@ -2,7 +2,6 @@
 /**
  * Template Name: Home-Template
  */
-
 get_header();
 
 global $current_language;
@@ -73,10 +72,6 @@ if (!function_exists('zad_render_home_brand_slider')) {
                                 </div>
 
                                 <div class="brand-slide-copy">
-                                    <?php if (!empty($slide['single_image'])) : ?>
-                                        <img src="<?php echo esc_url($slide['single_image']); ?>" alt="" class="brand-slide-logo" />
-                                    <?php endif; ?>
-
                                     <?php if ($title !== '') : ?>
                                         <h3><?php echo esc_html($title); ?></h3>
                                     <?php endif; ?>
@@ -263,7 +258,7 @@ $home_slider_configs = [
 ?>
 
 <div class="container home-sliders-grid">
-    <div class="row">
+    <div class="row g-4">
         <?php foreach ($home_slider_configs as $slider_config) : ?>
             <div class="col-lg-6 col-md-6 col-12 slider-grid-item">
                 <?php zad_render_home_brand_slider($slider_config['slides'], $slider_config, $current_language); ?>
