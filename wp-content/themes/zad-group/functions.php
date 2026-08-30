@@ -430,8 +430,8 @@ function render_about_page_meta_box($post) {
         <?php wp_nonce_field('zad_save_about_hero_background', 'zad_about_hero_background_nonce'); ?>
         <h3>Our Mission Section</h3>
 
-        <h4>Full Hero Background Image</h4>
-        <p>For the best result, upload a wide image of at least 1920 × 800 pixels. The existing About artwork is used if this field is empty.</p>
+        <h4>Full-width Top Banner</h4>
+        <p>Upload a wide banner of at least 1920 × 800 pixels. This image appears above the two-card Mission section.</p>
         <div id="about-hero-background-field">
             <input
                 type="url"
@@ -442,8 +442,8 @@ function render_about_page_meta_box($post) {
                 placeholder="https://..."
             />
             <p>
-                <button type="button" class="button" id="upload-about-hero-background">Select Background Image</button>
-                <button type="button" class="button" id="remove-about-hero-background">Use Default Image</button>
+                <button type="button" class="button" id="upload-about-hero-background">Select Top Banner</button>
+                <button type="button" class="button" id="remove-about-hero-background">Use Banner Manager Fallback</button>
             </p>
             <img
                 id="about-hero-background-preview"
@@ -467,8 +467,8 @@ function render_about_page_meta_box($post) {
                     }
 
                     aboutHeroFrame = wp.media({
-                        title: 'Select About Hero Background',
-                        button: { text: 'Use as hero background' },
+                        title: 'Select About Top Banner',
+                        button: { text: 'Use as top banner' },
                         library: { type: 'image' },
                         multiple: false
                     });
@@ -1546,7 +1546,7 @@ function display_timeline_images_meta_box($post) {
                     </h3>
                     <div class="accordion-content2" style="display: none;">
                         <p><strong>History Images:</strong></p>
-                        <p>Add one or more images. Multiple images are displayed as a slider inside this history item.</p>
+                        <p>Add one or more images. Images are displayed horizontally at the same 300 × 300 size inside this history item.</p>
                         <div class="timeline-images-list">
                             <?php foreach ($slide_images as $image_url) : ?>
                                 <div class="timeline-image-row" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -1682,7 +1682,7 @@ function display_timeline_images_meta_box($post) {
                     </h3>
                     <div class="accordion-content2">
                         <p><strong>History Images:</strong></p>
-                        <p>Add one or more images. Multiple images are displayed as a slider inside this history item.</p>
+                        <p>Add one or more images. Images are displayed horizontally at the same 300 × 300 size inside this history item.</p>
                         <div class="timeline-images-list"></div>
                         <p><button type="button" class="button button-secondary add-timeline-images">Add Images</button></p>
                         <p><strong>Title:</strong></p>
@@ -3341,22 +3341,26 @@ add_action('admin_footer', 'enqueue_franchise_meta_box_scripts');
 // }
 
 function add_privacy_policy_metabox() {
-    // Check if the post is the Privacy Policy page
     global $post;
 
-    //     // Get the Privacy Policy page dynamically by its slug
-    $privacy_policy_page = get_page_by_path('privacy-policy');
-    if ($privacy_policy_page) {
-        add_meta_box(
-            'privacy_policy_editor', // Metabox ID
-            'Privacy Policy Content', // Title of the metabox
-            'privacy_policy_editor_callback', // Callback function
-            'page', // Post type (here we add to pages)
-            'normal', // Context (normal means it will appear in the main section)
-            'high', // Priority (high means it will appear at the top)
-            array('privacy_page_id' => $privacy_policy_page_id) // Pass privacy policy ID
-        );
+    if (!$post || $post->post_type !== 'page') {
+        return;
     }
+
+    $privacy_policy_page = get_page_by_path('privacy-policy');
+
+    if (!$privacy_policy_page || (int) $post->ID !== (int) $privacy_policy_page->ID) {
+        return;
+    }
+
+    add_meta_box(
+        'privacy_policy_editor',
+        'Privacy Policy Content',
+        'privacy_policy_editor_callback',
+        'page',
+        'normal',
+        'high'
+    );
 }
 add_action('add_meta_boxes', 'add_privacy_policy_metabox');
 
@@ -3576,3 +3580,290 @@ function zad_maintenance_mode() {
 }
 
 add_action('template_redirect', 'zad_maintenance_mode');
+
+/**
+ * Home Slider 3 and Slider 4
+ *
+ * The original theme only stored two independent slider collections and
+ * reused them for the third and fourth cards. These repeatable meta boxes let
+ * Blak Peco and its duplicated layout be managed independently.
+ */
+function zad_extra_home_slider_fields() {
+    return [
+        ['key' => 'image', 'label' => 'Main Image', 'type' => 'image'],
+        ['key' => 'single_image', 'label' => 'Logo / Small Image', 'type' => 'image'],
+        ['key' => 'title', 'label' => 'Title', 'type' => 'text'],
+        ['key' => 'title_ar', 'label' => 'Title (Arabic)', 'type' => 'text'],
+        ['key' => 'description', 'label' => 'Description', 'type' => 'textarea'],
+        ['key' => 'description_ar', 'label' => 'Description (Arabic)', 'type' => 'textarea'],
+        ['key' => 'sub_description', 'label' => 'Sub-description', 'type' => 'textarea'],
+        ['key' => 'sub_description_ar', 'label' => 'Sub-description (Arabic)', 'type' => 'textarea'],
+        ['key' => 'orders', 'label' => 'Statistic 1 Value', 'type' => 'text'],
+        ['key' => 'orders_ar', 'label' => 'Statistic 1 Value (Arabic)', 'type' => 'text'],
+        ['key' => 'per_week', 'label' => 'Statistic 1 Label', 'type' => 'text'],
+        ['key' => 'per_week_ar', 'label' => 'Statistic 1 Label (Arabic)', 'type' => 'text'],
+        ['key' => 'ice_cream_orders', 'label' => 'Statistic 2 Value', 'type' => 'text'],
+        ['key' => 'ice_cream_orders_ar', 'label' => 'Statistic 2 Value (Arabic)', 'type' => 'text'],
+        ['key' => 'ice_cream_per_year', 'label' => 'Statistic 2 Label', 'type' => 'text'],
+        ['key' => 'ice_cream_per_year_ar', 'label' => 'Statistic 2 Label (Arabic)', 'type' => 'text'],
+        ['key' => 'stores', 'label' => 'Statistic 3 Value', 'type' => 'text'],
+        ['key' => 'stores_ar', 'label' => 'Statistic 3 Value (Arabic)', 'type' => 'text'],
+        ['key' => 'stores_desc', 'label' => 'Statistic 3 Label', 'type' => 'text'],
+        ['key' => 'stores_desc_ar', 'label' => 'Statistic 3 Label (Arabic)', 'type' => 'text'],
+        ['key' => 'cake_orders', 'label' => 'Statistic 4 Value', 'type' => 'text'],
+        ['key' => 'cake_orders_ar', 'label' => 'Statistic 4 Value (Arabic)', 'type' => 'text'],
+        ['key' => 'cake_per_year', 'label' => 'Statistic 4 Label', 'type' => 'text'],
+        ['key' => 'cake_per_year_ar', 'label' => 'Statistic 4 Label (Arabic)', 'type' => 'text'],
+        ['key' => 'dishes', 'label' => 'Statistic 5 Value', 'type' => 'text'],
+        ['key' => 'dishes_ar', 'label' => 'Statistic 5 Value (Arabic)', 'type' => 'text'],
+        ['key' => 'dish_title', 'label' => 'Statistic 5 Label', 'type' => 'text'],
+        ['key' => 'dish_title_ar', 'label' => 'Statistic 5 Label (Arabic)', 'type' => 'text'],
+        ['key' => 'event', 'label' => 'Statistic 6 Value', 'type' => 'text'],
+        ['key' => 'event_ar', 'label' => 'Statistic 6 Value (Arabic)', 'type' => 'text'],
+        ['key' => 'event_text', 'label' => 'Statistic 6 Label', 'type' => 'text'],
+        ['key' => 'event_text_ar', 'label' => 'Statistic 6 Label (Arabic)', 'type' => 'text'],
+        ['key' => 'rating', 'label' => 'Statistic 7 Value', 'type' => 'text'],
+        ['key' => 'rating_ar', 'label' => 'Statistic 7 Value (Arabic)', 'type' => 'text'],
+        ['key' => 'rating_desc', 'label' => 'Statistic 7 Label', 'type' => 'text'],
+        ['key' => 'rating_desc_ar', 'label' => 'Statistic 7 Label (Arabic)', 'type' => 'text'],
+        ['key' => 'review', 'label' => 'Statistic 8 Value', 'type' => 'text'],
+        ['key' => 'review_ar', 'label' => 'Statistic 8 Value (Arabic)', 'type' => 'text'],
+        ['key' => 'review_desc', 'label' => 'Statistic 8 Label', 'type' => 'text'],
+        ['key' => 'review_desc_ar', 'label' => 'Statistic 8 Label (Arabic)', 'type' => 'text'],
+        ['key' => 'button_text', 'label' => 'Button Text', 'type' => 'text'],
+        ['key' => 'button_text_ar', 'label' => 'Button Text (Arabic)', 'type' => 'text'],
+        ['key' => 'button_link', 'label' => 'Button Link', 'type' => 'url'],
+        ['key' => 'instagram_link', 'label' => 'Instagram Link', 'type' => 'url'],
+    ];
+}
+
+function zad_add_extra_home_slider_meta_boxes() {
+    global $post;
+
+    if (!$post || $post->post_type !== 'page' || $post->post_name !== 'home') {
+        return;
+    }
+
+    add_meta_box(
+        'home_slider_3_meta_box',
+        'Home Slider 3 — Blak Peco',
+        'zad_render_extra_home_slider_meta_box',
+        'page',
+        'normal',
+        'high',
+        [
+            'meta_key' => 'homeSlider3_slider_images',
+            'field_name' => 'homeSlider3_slider',
+            'wrapper_id' => 'home-slider-3-admin',
+        ]
+    );
+
+    add_meta_box(
+        'home_slider_4_meta_box',
+        'Home Slider 4 — Blak Peco Layout',
+        'zad_render_extra_home_slider_meta_box',
+        'page',
+        'normal',
+        'high',
+        [
+            'meta_key' => 'homeSlider4_slider_images',
+            'field_name' => 'homeSlider4_slider',
+            'wrapper_id' => 'home-slider-4-admin',
+        ]
+    );
+}
+add_action('add_meta_boxes', 'zad_add_extra_home_slider_meta_boxes');
+
+function zad_render_extra_home_slider_meta_box($post, $box) {
+    $settings = $box['args'];
+    $slides = get_post_meta($post->ID, $settings['meta_key'], true);
+    $slides = is_array($slides) ? $slides : [];
+    $fields = zad_extra_home_slider_fields();
+    $wrapper_id = $settings['wrapper_id'];
+    $field_name = $settings['field_name'];
+
+    wp_nonce_field('zad_save_extra_home_sliders', 'zad_extra_home_sliders_nonce');
+    ?>
+    <input type="hidden" name="<?php echo esc_attr($field_name); ?>_present" value="1" />
+    <p>Each item uses the same image-left/content-right arrangement shown in the supplied Blak Peco reference.</p>
+    <div id="<?php echo esc_attr($wrapper_id); ?>" class="zad-extra-slider-admin" data-field-name="<?php echo esc_attr($field_name); ?>">
+        <div class="zad-extra-slides">
+            <?php foreach ($slides as $index => $slide) : ?>
+                <div class="zad-extra-slide" data-index="<?php echo esc_attr($index); ?>" style="margin-bottom:16px;border:1px solid #ccd0d4;border-radius:6px;">
+                    <button type="button" class="button-link zad-extra-toggle" style="display:block;width:100%;padding:12px 14px;text-align:left;font-weight:700;">Slide <?php echo esc_html($index + 1); ?></button>
+                    <div class="zad-extra-fields" style="display:none;padding:0 14px 14px;">
+                        <?php foreach ($fields as $field) :
+                            $value = $slide[$field['key']] ?? '';
+                            $input_name = $field_name . '[' . $index . '][' . $field['key'] . ']';
+                        ?>
+                            <p>
+                                <label><strong><?php echo esc_html($field['label']); ?></strong></label><br />
+                                <?php if ($field['type'] === 'textarea') : ?>
+                                    <textarea class="widefat" rows="3" name="<?php echo esc_attr($input_name); ?>"><?php echo esc_textarea($value); ?></textarea>
+                                <?php else : ?>
+                                    <input
+                                        class="widefat<?php echo $field['type'] === 'image' ? ' zad-extra-image-url' : ''; ?>"
+                                        type="<?php echo $field['type'] === 'url' || $field['type'] === 'image' ? 'url' : 'text'; ?>"
+                                        name="<?php echo esc_attr($input_name); ?>"
+                                        value="<?php echo esc_attr($value); ?>"
+                                    />
+                                    <?php if ($field['type'] === 'image') : ?>
+                                        <button type="button" class="button zad-extra-upload-image" style="margin-top:6px;">Select Image</button>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </p>
+                        <?php endforeach; ?>
+                        <button type="button" class="button-link-delete zad-extra-remove">Remove Slide</button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <button type="button" class="button button-primary zad-extra-add">Add New Slide</button>
+    </div>
+
+    <script>
+    (function() {
+        const root = document.getElementById(<?php echo wp_json_encode($wrapper_id); ?>);
+        if (!root) return;
+
+        const slidesContainer = root.querySelector('.zad-extra-slides');
+        const fieldName = root.dataset.fieldName;
+        const fieldDefinitions = <?php echo wp_json_encode($fields); ?>;
+        let nextIndex = Array.from(root.querySelectorAll('.zad-extra-slide')).reduce(function(max, slide) {
+            return Math.max(max, Number(slide.dataset.index || 0) + 1);
+        }, 0);
+
+        function fieldHtml(field, index) {
+            const name = fieldName + '[' + index + '][' + field.key + ']';
+            if (field.type === 'textarea') {
+                return '<p><label><strong>' + field.label + '</strong></label><br><textarea class="widefat" rows="3" name="' + name + '"></textarea></p>';
+            }
+
+            const type = field.type === 'url' || field.type === 'image' ? 'url' : 'text';
+            const imageClass = field.type === 'image' ? ' zad-extra-image-url' : '';
+            const uploadButton = field.type === 'image' ? '<button type="button" class="button zad-extra-upload-image" style="margin-top:6px;">Select Image</button>' : '';
+            return '<p><label><strong>' + field.label + '</strong></label><br><input class="widefat' + imageClass + '" type="' + type + '" name="' + name + '" value="">' + uploadButton + '</p>';
+        }
+
+        root.querySelector('.zad-extra-add').addEventListener('click', function() {
+            const slide = document.createElement('div');
+            const slideNumber = root.querySelectorAll('.zad-extra-slide').length + 1;
+            slide.className = 'zad-extra-slide';
+            slide.dataset.index = nextIndex;
+            slide.style.cssText = 'margin-bottom:16px;border:1px solid #ccd0d4;border-radius:6px;';
+            slide.innerHTML = '<button type="button" class="button-link zad-extra-toggle" style="display:block;width:100%;padding:12px 14px;text-align:left;font-weight:700;">Slide ' + slideNumber + '</button>' +
+                '<div class="zad-extra-fields" style="padding:0 14px 14px;">' +
+                fieldDefinitions.map(function(field) { return fieldHtml(field, nextIndex); }).join('') +
+                '<button type="button" class="button-link-delete zad-extra-remove">Remove Slide</button></div>';
+            slidesContainer.appendChild(slide);
+            nextIndex++;
+        });
+
+        root.addEventListener('click', function(event) {
+            const toggle = event.target.closest('.zad-extra-toggle');
+            if (toggle) {
+                const fields = toggle.parentElement.querySelector('.zad-extra-fields');
+                fields.style.display = fields.style.display === 'none' ? 'block' : 'none';
+                return;
+            }
+
+            const remove = event.target.closest('.zad-extra-remove');
+            if (remove) {
+                remove.closest('.zad-extra-slide').remove();
+                return;
+            }
+
+            const upload = event.target.closest('.zad-extra-upload-image');
+            if (!upload || typeof wp === 'undefined' || !wp.media) return;
+
+            const input = upload.parentElement.querySelector('.zad-extra-image-url');
+            const frame = wp.media({
+                title: 'Select Slider Image',
+                button: { text: 'Use this image' },
+                library: { type: 'image' },
+                multiple: false
+            });
+            frame.on('select', function() {
+                input.value = frame.state().get('selection').first().toJSON().url;
+            });
+            frame.open();
+        });
+    })();
+    </script>
+    <?php
+}
+
+function zad_save_extra_home_sliders($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (
+        !isset($_POST['zad_extra_home_sliders_nonce']) ||
+        !wp_verify_nonce(
+            sanitize_text_field(wp_unslash($_POST['zad_extra_home_sliders_nonce'])),
+            'zad_save_extra_home_sliders'
+        )
+    ) {
+        return;
+    }
+
+    $slider_settings = [
+        ['meta_key' => 'homeSlider3_slider_images', 'field_name' => 'homeSlider3_slider'],
+        ['meta_key' => 'homeSlider4_slider_images', 'field_name' => 'homeSlider4_slider'],
+    ];
+    $fields = zad_extra_home_slider_fields();
+    $field_types = [];
+    foreach ($fields as $field) {
+        $field_types[$field['key']] = $field['type'];
+    }
+
+    foreach ($slider_settings as $settings) {
+        $present_key = $settings['field_name'] . '_present';
+        if (!isset($_POST[$present_key])) {
+            continue;
+        }
+
+        $raw_slides = isset($_POST[$settings['field_name']])
+            ? wp_unslash($_POST[$settings['field_name']])
+            : [];
+        $clean_slides = [];
+
+        if (is_array($raw_slides)) {
+            foreach ($raw_slides as $raw_slide) {
+                if (!is_array($raw_slide)) {
+                    continue;
+                }
+
+                $clean_slide = [];
+                foreach ($field_types as $key => $type) {
+                    $value = $raw_slide[$key] ?? '';
+                    if ($type === 'url' || $type === 'image') {
+                        $clean_slide[$key] = esc_url_raw($value);
+                    } elseif ($type === 'textarea') {
+                        $clean_slide[$key] = sanitize_textarea_field($value);
+                    } elseif ($key === 'color') {
+                        $clean_slide[$key] = sanitize_hex_color($value) ?: '';
+                    } else {
+                        $clean_slide[$key] = sanitize_text_field($value);
+                    }
+                }
+
+                if (array_filter($clean_slide, function($value) { return $value !== ''; })) {
+                    $clean_slides[] = $clean_slide;
+                }
+            }
+        }
+
+        if (empty($clean_slides)) {
+            delete_post_meta($post_id, $settings['meta_key']);
+        } else {
+            update_post_meta($post_id, $settings['meta_key'], array_values($clean_slides));
+        }
+    }
+}
+add_action('save_post_page', 'zad_save_extra_home_sliders');
