@@ -1610,3 +1610,415 @@ div#galleryCarousel .carousel-item img {
     padding-bottom: 0 !important;
   }
 }
+
+/* =========================================================
+   ABOUT + HOME CORRECTIONS FROM THE AUGUST 2026 REVIEW
+   Kept at the end of the stylesheet so legacy theme rules
+   cannot override these component layouts.
+   ========================================================= */
+
+/* About: mission content and its artwork are separate cards. */
+.about-mission-section {
+  padding: clamp(54px, 7vw, 96px) 0;
+  background: var(--light-gray-color);
+}
+
+.about-mission-section .row {
+  align-items: stretch;
+}
+
+.about-mission-section [class*="col-"] {
+  display: flex;
+}
+
+.about-mission-card {
+  width: 100%;
+  min-height: clamp(430px, 39vw, 540px);
+  overflow: hidden;
+  border-radius: 30px;
+  background: #fff;
+  box-shadow: 0 18px 55px rgba(39, 22, 22, 0.1);
+}
+
+.about-mission-card--content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(30px, 4vw, 58px);
+}
+
+.about-mission-card--content .widget,
+.about-mission-card--content .custom-html-block {
+  width: 100%;
+  margin: 0;
+}
+
+.about-mission-card--content .aboutHeroSec {
+  width: 100%;
+  min-height: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.about-mission-card--content .aboutHeroSec > .container {
+  width: 100%;
+  max-width: none;
+  padding: 0 !important;
+}
+
+.about-mission-card--content .aboutHeroSec > .container > .row {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+.about-mission-card--content .aboutHeroSec > .container > .row > [class*="col-"] {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  padding: 0 !important;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.about-mission-card--content .aboutHeroSec h1 {
+  font-size: clamp(46px, 4.7vw, 68px);
+  line-height: 1;
+}
+
+.about-mission-card--image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(22px, 3vw, 42px);
+}
+
+.about-mission-card--image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 470px;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* History: exactly one year per outer slide. */
+.history-main-swiper {
+  width: 100%;
+  padding: 48px 0 58px !important;
+  overflow: hidden;
+}
+
+.history-main-wrapper {
+  align-items: flex-start;
+  padding-bottom: 0 !important;
+}
+
+.history-main-swiper .history-card-slide {
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto;
+  padding: 0 max(24px, calc((100vw - 1320px) / 2));
+}
+
+.history-main-swiper .history-card {
+  display: flex !important;
+  width: 100%;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.history-main-swiper .history-year-rail {
+  position: relative;
+  flex: 0 0 120px;
+  width: 120px;
+  height: 300px;
+}
+
+.history-main-swiper .history-year-rail::before {
+  top: 0;
+  bottom: auto;
+  left: 0;
+  width: 18px;
+  height: 300px;
+  background: url(../images/linebar.png) center / 100% 100% no-repeat;
+}
+
+.history-main-swiper .history-year-rail h1 {
+  position: absolute;
+  top: 150px;
+  left: 58%;
+  width: max-content;
+  margin: 0;
+  font-size: clamp(58px, 6vw, 92px) !important;
+  line-height: 1;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  transform-origin: center;
+}
+
+.history-main-swiper .history-card-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.history-main-swiper .history-images-row {
+  display: grid !important;
+  grid-auto-columns: 300px;
+  grid-auto-flow: column;
+  grid-template-rows: 300px;
+  justify-content: start;
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 0 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.history-main-swiper .history-image-tile,
+.history-main-swiper .history-image-tile .timeimag {
+  display: block;
+  width: 300px !important;
+  height: 300px !important;
+  max-width: none;
+  margin: 0;
+  border-radius: 24px;
+}
+
+.history-main-swiper .history-image-tile {
+  overflow: hidden;
+}
+
+.history-main-swiper .history-image-tile .timeimag {
+  object-fit: cover;
+  object-position: center;
+}
+
+.history-main-swiper .history-card-content {
+  width: 100%;
+  max-width: 760px;
+  padding-top: 22px;
+}
+
+[lang="ar"] .history-main-swiper .history-card {
+  flex-direction: row-reverse;
+}
+
+[lang="ar"] .history-main-swiper .history-year-rail::before {
+  right: 0;
+  left: auto;
+}
+
+[lang="ar"] .history-main-swiper .history-year-rail h1 {
+  right: 58%;
+  left: auto;
+  transform: translate(50%, -50%) rotate(90deg);
+}
+
+/* Home: two equal cards per row, one image left and content right. */
+.home-sliders-grid {
+  --brand-slider-height: 360px;
+}
+
+.home-sliders-grid > .row {
+  align-items: stretch;
+}
+
+.home-sliders-grid .slider-grid-item {
+  display: flex;
+}
+
+.home-sliders-grid .brand-slider-section,
+.home-sliders-grid .brand-slider,
+.home-sliders-grid .brand-slider .carousel-inner,
+.home-sliders-grid .brand-slider .carousel-item {
+  width: 100% !important;
+  height: var(--brand-slider-height) !important;
+  margin: 0 !important;
+}
+
+.home-sliders-grid .brand-slider,
+.home-sliders-grid .brand-slider .carousel-inner,
+.home-sliders-grid .brand-slider .carousel-item {
+  border-radius: 26px;
+}
+
+.home-sliders-grid .brand-slider .carousel-inner {
+  overflow: hidden !important;
+}
+
+.home-sliders-grid .brand-slide-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 44%) minmax(0, 56%) !important;
+  grid-template-rows: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden;
+  color: var(--brand-slide-ink) !important;
+  background: var(--brand-slide-bg) !important;
+}
+
+.home-sliders-grid .brand-slide-media {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0;
+  height: 100% !important;
+  padding: 14px !important;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.home-sliders-grid .brand-slide-image,
+.home-sliders-grid .brand-slide-image-placeholder {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  border-radius: 18px !important;
+}
+
+.home-sliders-grid .brand-slide-image {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.home-sliders-grid .brand-slide-copy {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0;
+  height: 100% !important;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 22px 56px !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: var(--brand-slide-ink) !important;
+  background: var(--brand-slide-bg) !important;
+}
+
+.home-sliders-grid .brand-slide-copy h3,
+.home-sliders-grid .brand-slide-copy p,
+.home-sliders-grid .brand-slide-copy strong,
+.home-sliders-grid .brand-slide-copy span,
+.home-sliders-grid .brand-slide-social {
+  color: inherit !important;
+}
+
+.home-sliders-grid .brand-slide-copy h3 {
+  margin: 0;
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 750;
+  line-height: 1.08;
+}
+
+.home-sliders-grid .brand-slide-copy p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.home-sliders-grid .brand-slide-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 12px;
+}
+
+.home-sliders-grid .brand-slider-controls {
+  z-index: 5;
+}
+
+@media screen and (max-width: 767px) {
+  .about-mission-section {
+    padding: 38px 14px;
+  }
+
+  .about-mission-card {
+    min-height: 0;
+    border-radius: 24px;
+  }
+
+  .about-mission-card--content {
+    padding: 30px 22px;
+  }
+
+  .about-mission-card--image {
+    min-height: 360px;
+    padding: 18px;
+  }
+
+  .history-main-swiper {
+    padding: 34px 0 44px !important;
+  }
+
+  .history-main-swiper .history-card-slide {
+    padding: 0 16px;
+  }
+
+  .history-main-swiper .history-card {
+    gap: 12px;
+  }
+
+  .history-main-swiper .history-year-rail {
+    flex-basis: 72px;
+    width: 72px;
+    height: 220px;
+  }
+
+  .history-main-swiper .history-year-rail::before {
+    width: 14px;
+    height: 220px;
+  }
+
+  .history-main-swiper .history-year-rail h1 {
+    top: 110px;
+    font-size: 48px !important;
+  }
+
+  .history-main-swiper .history-images-row {
+    grid-auto-columns: 220px;
+    grid-template-rows: 220px;
+    gap: 14px;
+  }
+
+  .history-main-swiper .history-image-tile,
+  .history-main-swiper .history-image-tile .timeimag {
+    width: 220px !important;
+    height: 220px !important;
+    border-radius: 18px;
+  }
+
+  .home-sliders-grid {
+    --brand-slider-height: auto;
+  }
+
+  .home-sliders-grid .brand-slider-section,
+  .home-sliders-grid .brand-slider,
+  .home-sliders-grid .brand-slider .carousel-inner,
+  .home-sliders-grid .brand-slider .carousel-item {
+    height: auto !important;
+    min-height: 540px;
+  }
+
+  .home-sliders-grid .brand-slide-card {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 235px minmax(305px, auto) !important;
+    min-height: 540px !important;
+  }
+
+  .home-sliders-grid .brand-slide-copy {
+    height: auto !important;
+    min-height: 305px;
+    padding: 22px 20px 60px !important;
+    overflow: visible;
+  }
+}
