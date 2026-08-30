@@ -100,7 +100,7 @@ $lang = $current_language;  // Assign it to $lang as well
             >
              <a href="<?php echo esc_url( home_url( '/about-us' ). '?lang=' . $lang ); ?>" class="text-white text-decoration-none"><?php echo custom_translate('about_us');?></a>
               <a href="#" data-bs-toggle="modal" data-bs-target="#contactUsForm" class="text-white text-decoration-none"><?php echo custom_translate('contact_us');?></a>
-              <a href="<?php echo esc_url( home_url( '/gallery' ) . '?lang=' . $lang); ?>" class="text-white text-decoration-none"><?php echo custom_translate('gallery');?></a>
+             
             </div>
           </div>
         </div>

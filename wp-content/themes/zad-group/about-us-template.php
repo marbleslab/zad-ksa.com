@@ -4,8 +4,9 @@
  */
 get_header();
 // $current_language = isset($_COOKIE['site_language']) ? $_COOKIE['site_language'] : 'en';
- global $current_language;
-$lang = isset($current_language) ? $current_language : 'en';
+global $current_language;
+$current_language = !empty($current_language) ? $current_language : 'en';
+$lang = $current_language;
   $page_id = get_the_ID();
   
 
@@ -29,6 +30,14 @@ $lang = isset($current_language) ? $current_language : 'en';
  
   $about_bottom_banner = null;
 
+  // The About hero can now use a dedicated full-width background image.
+  // Keep the bundled artwork as a safe fallback for existing installations.
+  $about_hero_background = get_post_meta($page_id, '_about_hero_background_image', true);
+  $about_hero_has_custom_background = !empty($about_hero_background);
+  if (empty($about_hero_background)) {
+      $about_hero_background = get_template_directory_uri() . '/assets/images/aboutHeroImg.png';
+  }
+
   foreach ($banners as $banner) {
      
       if ($banner['page'] === 'about' && $banner['position'] === 'bottom') {
@@ -42,7 +51,11 @@ $lang = isset($current_language) ? $current_language : 'en';
 
 <?php if ( is_active_sidebar( 'below-sidebar' ) ) : ?>
 
-    <div id="secondary-below-sidebar" class="widget-area">
+    <div
+      id="secondary-below-sidebar"
+      class="widget-area<?php echo $about_hero_has_custom_background ? ' has-custom-about-hero-background' : ''; ?>"
+      style="--about-hero-background-image: url('<?php echo esc_url($about_hero_background); ?>');"
+    >
         <?php dynamic_sidebar( 'below-sidebar' ); ?>
     </div><!-- #secondary-below-sidebar -->
 <?php endif; ?>
@@ -54,14 +67,6 @@ $lang = isset($current_language) ? $current_language : 'en';
       <span class="text-primary"><?php echo custom_translate('be_part_our_story'); ?></span>
     </h1>
     <img src="<?php if (!empty($about_bottom_banner)) { echo esc_url($about_bottom_banner); }?>" alt="" class="w-100" />
-
-    <div class="container position-relative">
-      <div class="joinimgbtn">
-        <a href="<?php echo esc_url( home_url( '/join-us' ) ); ?>"
-          ><img src="<?php echo get_template_directory_uri(); ?>/assets/images/joinnowimg.png" alt="" class=""
-        /></a>
-      </div>
-    </div>
   </section>
   <section class="timeline-slider bg-black py-5">
     <div class="container text-center pb-4 pt-5">
@@ -73,19 +78,33 @@ $lang = isset($current_language) ? $current_language : 'en';
         // Get the meta box data for the current page
         $slides = get_post_meta(get_the_ID(), 'timeline_slider_images', true);
         if (!empty($slides)) : ?>
-          <div class="swiper mySwiper pt-5">
+          <div class="swiper mySwiper pt-5" aria-label="<?php echo esc_attr($our_history_small_title_field_content); ?>">
             <div class="timslideControl border-top border-color-orange">
               <div class="container position-relative">
-                <div class="swiper-button-next arrow">
+                <button type="button" class="swiper-button-next history-main-next arrow" aria-label="<?php esc_attr_e('Next history item', 'zag-group'); ?>">
                   <i class="bi bi-arrow-right"></i>
-                </div>
-                <div class="swiper-button-prev arrow">
+                </button>
+                <button type="button" class="swiper-button-prev history-main-prev arrow" aria-label="<?php esc_attr_e('Previous history item', 'zag-group'); ?>">
                   <i class="bi bi-arrow-left"></i>
-                </div>
+                </button>
               </div>
             </div>
             <div class="swiper-wrapper container p-0">
-            <?php foreach ($slides as $slide) : ?>
+            <?php foreach ($slides as $slide) :
+              // Backward compatibility: move the old single image into the new
+              // images array at render time without requiring a data migration.
+              $history_images = [];
+              if (!empty($slide['images']) && is_array($slide['images'])) {
+                  $history_images = array_values(array_filter($slide['images']));
+              }
+              if (!empty($slide['image']) && !in_array($slide['image'], $history_images, true)) {
+                  array_unshift($history_images, $slide['image']);
+              }
+
+              $history_title = ($current_language === 'ar' && !empty($slide['title_ar']))
+                  ? $slide['title_ar']
+                  : ($slide['title'] ?? '');
+            ?>
               <div class="swiper-slide">
                 <div
                   class="row pt-5 align-items-center justify-content-center w-100 mx-auto"
@@ -94,26 +113,51 @@ $lang = isset($current_language) ? $current_language : 'en';
                     <h1 class="m-0 text-primary text-center"><?php echo esc_html($slide['year']); ?></h1>
                   </div>
                   <div class="col-sm-6 col-8 px-0">
-                  
-                    <?php if (!empty($slide['image'])) : ?>
-                        <img src="<?php echo esc_url($slide['image']); ?>" alt="<?php echo esc_attr($slide['title']); ?>"  class="d-block timeimag"/>
+                    <?php if (!empty($history_images)) : ?>
+                      <div class="swiper historyImageSwiper">
+                        <div class="swiper-wrapper">
+                          <?php foreach ($history_images as $history_image) : ?>
+                            <div class="swiper-slide">
+                              <img
+                                src="<?php echo esc_url($history_image); ?>"
+                                alt="<?php echo esc_attr($history_title); ?>"
+                                class="d-block timeimag"
+                                loading="lazy"
+                              />
+                            </div>
+                          <?php endforeach; ?>
+                        </div>
+
+                        <?php if (count($history_images) > 1) : ?>
+                          <button type="button" class="history-image-nav history-image-prev" aria-label="<?php esc_attr_e('Previous image', 'zag-group'); ?>">
+                            <i class="bi bi-chevron-left"></i>
+                          </button>
+                          <button type="button" class="history-image-nav history-image-next" aria-label="<?php esc_attr_e('Next image', 'zag-group'); ?>">
+                            <i class="bi bi-chevron-right"></i>
+                          </button>
+                          <div class="swiper-pagination history-image-pagination"></div>
+                        <?php endif; ?>
+                      </div>
                     <?php endif; ?>
                   </div>
                   <div class="col-sm-4 col-3"></div>
                   <div class="col-sm-6 col-8 ps-0">
                     <div class="content pt-3">
-                      <h4 class="text-white fw-bold fs-24"> <?php echo esc_html( $current_language === 'ar' ? $slide['title_ar'] : $slide['title']); ?></h4>
+                      <h4 class="text-white fw-bold fs-24"> <?php echo esc_html($history_title); ?></h4>
                       <p class="text-white fs-18">
                       
-                      <?php echo esc_html( $current_language === 'ar' ? $slide['description_ar'] : $slide['description']); ?>
+                      <?php
+                        $history_description = ($current_language === 'ar' && !empty($slide['description_ar']))
+                            ? $slide['description_ar']
+                            : ($slide['description'] ?? '');
+                        echo esc_html($history_description);
+                      ?>
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
               <?php endforeach; ?>
-            
-              <div class="swiper-slide"></div>
             </div>
           </div>
       <?php endif; ?>

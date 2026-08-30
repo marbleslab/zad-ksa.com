@@ -1,8 +1,8 @@
 /*!
 Theme Name: zadgroup
-Theme URI: http://underscores.me/
+Theme URI: https://zad-ksa.com/
 Author: Zad
-Author URI: http://underscores.me/
+Author URI: https://zad-ksa.com/
 Description: Zad Group Theme
 Version: 1.0.0
 Tested up to: 5.4
@@ -957,4 +957,334 @@ textarea {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1.5em;
+}
+/* =========================================================
+   FINAL HOME BRAND SLIDERS
+   2 equal sliders per row
+   ========================================================= */
+
+.home-sliders-grid {
+    --brand-slider-height: 320px;
+
+    width: calc(100vw - 80px) !important;
+    max-width: 1280px !important;
+
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+    margin-top: 50px !important;
+    margin-bottom: 60px !important;
+}
+
+/* ROW */
+.home-sliders-grid > .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: stretch !important;
+
+    margin-left: -12px !important;
+    margin-right: -12px !important;
+}
+
+
+/* =========================================================
+   EACH SLIDER COLUMN
+   ========================================================= */
+
+.home-sliders-grid .slider-grid-item {
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    max-width: 50% !important;
+
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    margin-bottom: 24px !important;
+
+    display: flex !important;
+    align-items: stretch !important;
+}
+
+
+/* Remove Bootstrap spacing from old slider sections */
+.home-sliders-grid .slider-grid-item > section.homeslider,
+.home-sliders-grid .slider-grid-item > section.homeslider2 {
+    width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: stretch !important;
+}
+
+
+/* Nested container */
+.home-sliders-grid section.homeslider > .container,
+.home-sliders-grid section.homeslider2 > .container {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
+/* =========================================================
+   SAME HEIGHT FOR BOTH SLIDERS
+   ========================================================= */
+
+.home-sliders-grid .carousel {
+    width: 100% !important;
+    height: var(--brand-slider-height) !important;
+}
+
+.home-sliders-grid .carousel-inner {
+    width: 100% !important;
+    height: var(--brand-slider-height) !important;
+
+    border-radius: 24px !important;
+    overflow: hidden !important;
+}
+
+.home-sliders-grid .carousel-item {
+    width: 100% !important;
+    height: var(--brand-slider-height) !important;
+}
+
+.home-sliders-grid .slider-content1,
+.home-sliders-grid .slider-content2,
+.home-sliders-grid .slider-content3 {
+    width: 100% !important;
+    height: var(--brand-slider-height) !important;
+}
+
+
+/* Main inner row */
+.home-sliders-grid .slider-content1 > .row,
+.home-sliders-grid .slider-content2 > .row,
+.home-sliders-grid .slider-content3 > .row {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+
+    display: flex !important;
+    align-items: stretch !important;
+}
+
+
+/* =========================================================
+   IMAGE + CONTENT COLUMNS
+   ========================================================= */
+
+@media (min-width: 768px) {
+
+    .home-sliders-grid .slider-content1 > .row > .col-sm-6,
+    .home-sliders-grid .slider-content2 > .row > .col-sm-6,
+    .home-sliders-grid .slider-content3 > .row > .col-sm-6 {
+        width: 50% !important;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+
+        height: 100% !important;
+        min-height: 100% !important;
+    }
+
+    /* Important: prevent old mobile positioning */
+    .home-sliders-grid .mobSliderCol {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+
+        height: 100% !important;
+    }
+}
+
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+.home-sliders-grid .slider-img {
+    display: block !important;
+
+    width: 100% !important;
+    height: var(--brand-slider-height) !important;
+
+    min-height: var(--brand-slider-height) !important;
+    max-height: var(--brand-slider-height) !important;
+
+    object-fit: cover !important;
+}
+
+
+/* =========================================================
+   TEXT CONTENT
+   ========================================================= */
+
+.home-sliders-grid .sidebarrightText,
+.home-sliders-grid .homeslider2 .sidebarrightText,
+.home-sliders-grid .homeslider2 .secondSlide .sidebarrightText {
+
+    width: 100% !important;
+    height: 100% !important;
+
+    margin: 0 !important;
+    padding: 22px 22px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    justify-content: center !important;
+    align-items: flex-start !important;
+
+    gap: 10px !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* Headings */
+.home-sliders-grid .sidebarrightText h2,
+.home-sliders-grid .sidebarrightText h3 {
+    font-size: 21px !important;
+    line-height: 1.2 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* Statistics headings */
+.home-sliders-grid .sidebarrightText h5 {
+    font-size: 18px !important;
+    line-height: 1.15 !important;
+
+    margin: 0 !important;
+}
+
+
+/* Paragraphs */
+.home-sliders-grid .sidebarrightText p,
+.home-sliders-grid .sidebarrightText .fs-20,
+.home-sliders-grid .sidebarrightText .fs-24 {
+
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+
+/* Logos / small images inside content */
+.home-sliders-grid .slide-single-image,
+.home-sliders-grid .logobanner2 {
+    margin-bottom: 4px !important;
+}
+
+
+/* =========================================================
+   MEEZ ALIGNMENT
+   ========================================================= */
+
+/* Keep Meez image/text reversed but aligned identically */
+.home-sliders-grid .homeslider2 .secondSlide {
+    height: 100% !important;
+    align-items: stretch !important;
+}
+
+
+/* Remove original extra Meez padding */
+.home-sliders-grid .homeslider2 .secondSlide .sidebarrightText {
+    padding: 22px 22px !important;
+}
+
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.home-sliders-grid .controlrow {
+    position: absolute !important;
+
+    width: 100% !important;
+
+    left: 0 !important;
+    right: 0 !important;
+
+    bottom: 14px !important;
+
+    margin: 0 !important;
+}
+
+.home-sliders-grid .controlss {
+    width: 100% !important;
+    padding-inline: 12px !important;
+}
+
+.home-sliders-grid .sliderbsControl {
+    width: 68px !important;
+    height: 28px !important;
+}
+
+.home-sliders-grid .carousel-control-prev,
+.home-sliders-grid .carousel-control-next {
+    width: 28px !important;
+    height: 28px !important;
+
+    font-size: 14px !important;
+}
+
+.home-sliders-grid .dotsbtn {
+    width: 82px !important;
+}
+
+.home-sliders-grid .carousel-indicators [data-bs-target] {
+    width: 6px !important;
+    height: 6px !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .home-sliders-grid {
+        width: calc(100vw - 30px) !important;
+        --brand-slider-height: auto;
+    }
+
+    .home-sliders-grid .slider-grid-item {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .home-sliders-grid .carousel,
+    .home-sliders-grid .carousel-inner,
+    .home-sliders-grid .carousel-item,
+    .home-sliders-grid .slider-content1,
+    .home-sliders-grid .slider-content2,
+    .home-sliders-grid .slider-content3 {
+        height: auto !important;
+    }
+
+    .home-sliders-grid .slider-content1 > .row,
+    .home-sliders-grid .slider-content2 > .row,
+    .home-sliders-grid .slider-content3 > .row {
+        height: auto !important;
+    }
+
+    .home-sliders-grid .slider-img {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+    }
 }

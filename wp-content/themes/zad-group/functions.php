@@ -9,7 +9,7 @@
 
 if ( ! defined( '_S_VERSION' ) ) {
 	// Replace the version number of the theme on each release.
-	define( '_S_VERSION', '1.0.0' );
+	define( '_S_VERSION', '1.1.0' );
 }
 
 /**
@@ -382,6 +382,20 @@ function add_custom_meta_boxes_for_about_and_home() {
 }
 add_action('add_meta_boxes', 'add_custom_meta_boxes_for_about_and_home');
 
+// Load the WordPress media library on page edit screens for the About hero
+// and timeline image selectors.
+function zad_about_page_media_library($hook_suffix) {
+    if (!in_array($hook_suffix, ['post.php', 'post-new.php'], true)) {
+        return;
+    }
+
+    $screen = get_current_screen();
+    if ($screen && $screen->post_type === 'page') {
+        wp_enqueue_media();
+    }
+}
+add_action('admin_enqueue_scripts', 'zad_about_page_media_library');
+
 // Function to render the Our Mission field for the About page
 function render_about_page_meta_box($post) {
     // Get the saved meta data for both English and Arabic
@@ -409,9 +423,73 @@ function render_about_page_meta_box($post) {
     $people_sub_heading_content_en = get_post_meta($post->ID, '_people_sub_heading_field_en', true);
     $people_sub_heading_content_ar = get_post_meta($post->ID, '_people_sub_heading_field_ar', true);
 
+    $about_hero_background_image = get_post_meta($post->ID, '_about_hero_background_image', true);
+
     // Output the fields for English and Arabic
     ?>
+        <?php wp_nonce_field('zad_save_about_hero_background', 'zad_about_hero_background_nonce'); ?>
         <h3>Our Mission Section</h3>
+
+        <h4>Full Hero Background Image</h4>
+        <p>For the best result, upload a wide image of at least 1920 × 800 pixels. The existing About artwork is used if this field is empty.</p>
+        <div id="about-hero-background-field">
+            <input
+                type="url"
+                id="about_hero_background_image"
+                name="about_hero_background_image"
+                value="<?php echo esc_url($about_hero_background_image); ?>"
+                class="widefat"
+                placeholder="https://..."
+            />
+            <p>
+                <button type="button" class="button" id="upload-about-hero-background">Select Background Image</button>
+                <button type="button" class="button" id="remove-about-hero-background">Use Default Image</button>
+            </p>
+            <img
+                id="about-hero-background-preview"
+                src="<?php echo esc_url($about_hero_background_image); ?>"
+                alt=""
+                style="<?php echo empty($about_hero_background_image) ? 'display:none;' : ''; ?> max-width:420px;height:auto;border-radius:8px;"
+            />
+        </div>
+        <script>
+            jQuery(function($) {
+                let aboutHeroFrame;
+                const input = $('#about_hero_background_image');
+                const preview = $('#about-hero-background-preview');
+
+                $('#upload-about-hero-background').on('click', function(event) {
+                    event.preventDefault();
+
+                    if (aboutHeroFrame) {
+                        aboutHeroFrame.open();
+                        return;
+                    }
+
+                    aboutHeroFrame = wp.media({
+                        title: 'Select About Hero Background',
+                        button: { text: 'Use as hero background' },
+                        library: { type: 'image' },
+                        multiple: false
+                    });
+
+                    aboutHeroFrame.on('select', function() {
+                        const attachment = aboutHeroFrame.state().get('selection').first().toJSON();
+                        input.val(attachment.url);
+                        preview.attr('src', attachment.url).show();
+                    });
+
+                    aboutHeroFrame.open();
+                });
+
+                $('#remove-about-hero-background').on('click', function(event) {
+                    event.preventDefault();
+                    input.val('');
+                    preview.attr('src', '').hide();
+                });
+            });
+        </script>
+
         <label for="join_video_aboutintrolink_field">Intro Video Link (YouTube, Vimeo, etc.):</label>
         <input type="url" id="join_video_aboutintrolink_field" name="join_video_aboutintrolink_field" value="<?php echo esc_attr(get_post_meta($post->ID, '_join_video_aboutintrolink_field', true)); ?>" style="width:100%;">
         <br><br>
@@ -914,6 +992,25 @@ function save_translation_meta_boxes($post_id) {
     // Check if the post is being autosaved or if the current user has permission
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return;
+    }
+
+    if (
+        isset($_POST['zad_about_hero_background_nonce']) &&
+        wp_verify_nonce(
+            sanitize_text_field(wp_unslash($_POST['zad_about_hero_background_nonce'])),
+            'zad_save_about_hero_background'
+        ) &&
+        current_user_can('edit_post', $post_id)
+    ) {
+        $about_hero_background = isset($_POST['about_hero_background_image'])
+            ? esc_url_raw(wp_unslash($_POST['about_hero_background_image']))
+            : '';
+
+        if ($about_hero_background) {
+            update_post_meta($post_id, '_about_hero_background_image', $about_hero_background);
+        } else {
+            delete_post_meta($post_id, '_about_hero_background_image');
+        }
     }
 
     // Save the Our Mission field for the About page (English and Arabic)
@@ -1422,42 +1519,71 @@ add_action('save_post', 'save_person_slider');
 
 // Function to display the meta box for Timeline Slider on the About page
 function display_timeline_images_meta_box($post) {
-    // Get the existing slides data
     $slides = get_post_meta($post->ID, 'timeline_slider_images', true);
+    wp_nonce_field('zad_save_timeline_slider', 'zad_timeline_slider_nonce');
     ?>
     <div id="timeline-slider-wrapper">
         <?php
         if (!empty($slides)) {
-            foreach ($slides as $index => $slide) { ?>
-                <div class="timeline-slider-slide" style="margin-bottom: 20px;">
+            foreach ($slides as $index => $slide) {
+                $slide_images = [];
+
+                if (!empty($slide['images']) && is_array($slide['images'])) {
+                    $slide_images = array_values(array_filter($slide['images']));
+                }
+
+                // Preserve all existing history records that still use the old
+                // single-image field.
+                if (!empty($slide['image']) && !in_array($slide['image'], $slide_images, true)) {
+                    array_unshift($slide_images, $slide['image']);
+                }
+                ?>
+                <div class="timeline-slider-slide" data-index="<?php echo esc_attr($index); ?>" style="margin-bottom: 20px;">
                     <h3 class="accordion-header">
-                        <button type="button" class="accordion-toggle2" data-index="<?php echo $index; ?>">
-                            Slide <?php echo $index + 1; ?>
+                        <button type="button" class="button accordion-toggle2" data-index="<?php echo esc_attr($index); ?>" aria-expanded="false">
+                            History <?php echo esc_html($index + 1); ?>
                         </button>
                     </h3>
                     <div class="accordion-content2" style="display: none;">
-                        <!-- Image Upload -->
-                        <p><strong>Image:</strong></p>
-                        <input type="text" name="timeline_slider[<?php echo $index; ?>][image]" value="<?php echo isset($slide['image']) ? esc_url($slide['image']) : ''; ?>" />
-                        <input type="button" class="button upload-image-button" value="Upload Image" />
+                        <p><strong>History Images:</strong></p>
+                        <p>Add one or more images. Multiple images are displayed as a slider inside this history item.</p>
+                        <div class="timeline-images-list">
+                            <?php foreach ($slide_images as $image_url) : ?>
+                                <div class="timeline-image-row" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                                    <img src="<?php echo esc_url($image_url); ?>" alt="" style="width:90px;height:65px;object-fit:cover;border-radius:6px;" />
+                                    <input
+                                        type="url"
+                                        name="timeline_slider[<?php echo esc_attr($index); ?>][images][]"
+                                        value="<?php echo esc_url($image_url); ?>"
+                                        class="widefat timeline-image-url"
+                                    />
+                                    <button type="button" class="button change-timeline-image">Change</button>
+                                    <button type="button" class="button remove-timeline-image">Remove</button>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <p>
+                            <button type="button" class="button button-secondary add-timeline-images">Add Images</button>
+                        </p>
 
                         <!-- Title -->
                         <p><strong>Title:</strong></p>
-                        <input type="text" name="timeline_slider[<?php echo $index; ?>][title]" value="<?php echo isset($slide['title']) ? esc_attr($slide['title']) : ''; ?>" class="widefat" />
+                        <input type="text" name="timeline_slider[<?php echo esc_attr($index); ?>][title]" value="<?php echo isset($slide['title']) ? esc_attr($slide['title']) : ''; ?>" class="widefat" />
                         <p><strong>Title (Arabic):</strong></p>
-                        <input type="text" name="timeline_slider[<?php echo $index; ?>][title_ar]" value="<?php echo isset($slide['title_ar']) ? esc_attr($slide['title_ar']) : ''; ?>" class="widefat" />
+                        <input type="text" name="timeline_slider[<?php echo esc_attr($index); ?>][title_ar]" value="<?php echo isset($slide['title_ar']) ? esc_attr($slide['title_ar']) : ''; ?>" class="widefat" />
+
                         <!-- Description -->
                         <p><strong>Description:</strong></p>
-                        <textarea name="timeline_slider[<?php echo $index; ?>][description]" class="widefat"><?php echo isset($slide['description']) ? esc_textarea($slide['description']) : ''; ?></textarea>
+                        <textarea name="timeline_slider[<?php echo esc_attr($index); ?>][description]" class="widefat"><?php echo isset($slide['description']) ? esc_textarea($slide['description']) : ''; ?></textarea>
 
                         <p><strong>Description (Arabic):</strong></p>
-                        <textarea name="timeline_slider[<?php echo $index; ?>][description_ar]" class="widefat"><?php echo isset($slide['description_ar']) ? esc_textarea($slide['description_ar']) : ''; ?></textarea>
+                        <textarea name="timeline_slider[<?php echo esc_attr($index); ?>][description_ar]" class="widefat"><?php echo isset($slide['description_ar']) ? esc_textarea($slide['description_ar']) : ''; ?></textarea>
 
                         <!-- Year -->
                         <p><strong>Year:</strong></p>
-                        <input type="text" name="timeline_slider[<?php echo $index; ?>][year]" value="<?php echo isset($slide['year']) ? esc_attr($slide['year']) : ''; ?>" class="widefat" />
+                        <input type="text" name="timeline_slider[<?php echo esc_attr($index); ?>][year]" value="<?php echo isset($slide['year']) ? esc_attr($slide['year']) : ''; ?>" class="widefat" />
 
-                        <p><a href="#" class="remove-slide button">Remove Slide</a></p>
+                        <p><button type="button" class="remove-slide button">Remove History</button></p>
                         <hr style="border-top: 1px solid #ff6e21;border-bottom: 1px solid #ff6e21;"/>
                     </div>
                 </div>
@@ -1468,99 +1594,151 @@ function display_timeline_images_meta_box($post) {
     </div>
 
     <p>
-        <a href="#" id="add-new-timeline-slide" class="button">Add New Slide</a>
+        <button type="button" id="add-new-timeline-slide" class="button button-primary">Add New History</button>
     </p>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let slideIndex = document.querySelectorAll('#timeline-slider-wrapper .timeline-slider-slide').length;
+            const wrapper = document.getElementById('timeline-slider-wrapper');
+            const addHistoryButton = document.getElementById('add-new-timeline-slide');
 
-            function handleImageUpload(button) {
-                const inputField = button.previousElementSibling;
+            if (!wrapper || !addHistoryButton || typeof wp === 'undefined' || !wp.media) {
+                return;
+            }
 
+            let slideIndex = Array.from(wrapper.querySelectorAll('.timeline-slider-slide')).reduce(function(maxIndex, slide) {
+                return Math.max(maxIndex, Number(slide.dataset.index || 0) + 1);
+            }, 0);
+
+            function appendImageRow(slide, imageUrl) {
+                const list = slide.querySelector('.timeline-images-list');
+                const index = slide.dataset.index;
+                const row = document.createElement('div');
+                const preview = document.createElement('img');
+                const input = document.createElement('input');
+                const changeButton = document.createElement('button');
+                const removeButton = document.createElement('button');
+
+                row.className = 'timeline-image-row';
+                row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px;';
+
+                preview.src = imageUrl;
+                preview.alt = '';
+                preview.style.cssText = 'width:90px;height:65px;object-fit:cover;border-radius:6px;';
+
+                input.type = 'url';
+                input.name = `timeline_slider[${index}][images][]`;
+                input.value = imageUrl;
+                input.className = 'widefat timeline-image-url';
+
+                changeButton.type = 'button';
+                changeButton.className = 'button change-timeline-image';
+                changeButton.textContent = 'Change';
+
+                removeButton.type = 'button';
+                removeButton.className = 'button remove-timeline-image';
+                removeButton.textContent = 'Remove';
+
+                row.append(preview, input, changeButton, removeButton);
+                list.appendChild(row);
+            }
+
+            function openImageLibrary(slide, row) {
                 const mediaFrame = wp.media({
-                    title: 'Select or Upload Image',
-                    button: {
-                        text: 'Use this image'
-                    },
-                    multiple: false
+                    title: row ? 'Change History Image' : 'Add History Images',
+                    button: { text: row ? 'Use this image' : 'Add selected images' },
+                    library: { type: 'image' },
+                    multiple: !row
                 });
 
                 mediaFrame.on('select', function() {
-                    const attachment = mediaFrame.state().get('selection').first().toJSON();
-                    inputField.value = attachment.url;
+                    const selection = mediaFrame.state().get('selection');
+
+                    if (row) {
+                        const attachment = selection.first().toJSON();
+                        row.querySelector('img').src = attachment.url;
+                        row.querySelector('.timeline-image-url').value = attachment.url;
+                        return;
+                    }
+
+                    selection.each(function(item) {
+                        appendImageRow(slide, item.toJSON().url);
+                    });
                 });
 
                 mediaFrame.open();
             }
 
-            document.getElementById('add-new-timeline-slide').addEventListener('click', function(e) {
-                e.preventDefault();
+            addHistoryButton.addEventListener('click', function() {
+                const newSlide = document.createElement('div');
+                const displayNumber = wrapper.querySelectorAll('.timeline-slider-slide').length + 1;
 
-                let newSlide = document.createElement('div');
-                newSlide.classList.add('timeline-slider-slide');
+                newSlide.className = 'timeline-slider-slide';
+                newSlide.dataset.index = slideIndex;
                 newSlide.style.marginBottom = '20px';
-                newSlide.innerHTML = `<h3 class="accordion-header"><button type="button" class="accordion-toggle2" data-index="${slideIndex}">Slide ${slideIndex + 1}</button></h3><div class="accordion-content" style="display: none;">`;
+                newSlide.innerHTML = `
+                    <h3 class="accordion-header">
+                        <button type="button" class="button accordion-toggle2" data-index="${slideIndex}" aria-expanded="true">History ${displayNumber}</button>
+                    </h3>
+                    <div class="accordion-content2">
+                        <p><strong>History Images:</strong></p>
+                        <p>Add one or more images. Multiple images are displayed as a slider inside this history item.</p>
+                        <div class="timeline-images-list"></div>
+                        <p><button type="button" class="button button-secondary add-timeline-images">Add Images</button></p>
+                        <p><strong>Title:</strong></p>
+                        <input type="text" name="timeline_slider[${slideIndex}][title]" class="widefat" value="" />
+                        <p><strong>Title (Arabic):</strong></p>
+                        <input type="text" name="timeline_slider[${slideIndex}][title_ar]" class="widefat" value="" />
+                        <p><strong>Description:</strong></p>
+                        <textarea name="timeline_slider[${slideIndex}][description]" class="widefat"></textarea>
+                        <p><strong>Description (Arabic):</strong></p>
+                        <textarea name="timeline_slider[${slideIndex}][description_ar]" class="widefat"></textarea>
+                        <p><strong>Year:</strong></p>
+                        <input type="text" name="timeline_slider[${slideIndex}][year]" class="widefat" value="" />
+                        <p><button type="button" class="remove-slide button">Remove History</button></p>
+                        <hr style="border-top:1px solid #ff6e21;border-bottom:1px solid #ff6e21;" />
+                    </div>`;
 
-                newSlide.innerHTML += `
-                    <p><strong>Image:</strong></p>
-                    <input type="text" name="timeline_slider[${slideIndex}][image]" class="image-url" value="" />
-                    <input type="button" class="button upload-image-button" value="Upload Image" />
-
-                    <p><strong>Title:</strong></p>
-                    <input type="text" name="timeline_slider[${slideIndex}][title]" class="widefat" value="" />
-
-                    <p><strong>Title (Arabic):</strong></p>
-                    <input type="text" name="timeline_slider[${slideIndex}][title_ar]" class="widefat" value="" />
-
-                    <p><strong>Description:</strong></p>
-                    <textarea name="timeline_slider[${slideIndex}][description]" class="widefat"></textarea>
-
-                     <p><strong>Description (Arabic):</strong></p>
-                    <textarea name="timeline_slider[${slideIndex}][description_ar]" class="widefat"></textarea>
-
-                    <p><strong>Year:</strong></p>
-                    <input type="text" name="timeline_slider[${slideIndex}][year]" class="widefat" value="" />
-                    <p></p>
-                    <hr style="border-top: 1px solid #ff6e21;border-bottom: 1px solid #ff6e21;"/>
-                `;
-
-                newSlide.innerHTML += `</div><a href="#" class="remove-slide button">Remove Slide</a>`;
-                document.getElementById('timeline-slider-wrapper').appendChild(newSlide);
+                wrapper.appendChild(newSlide);
                 slideIndex++;
-
-                addSlideEventListeners(newSlide);
             });
 
-            const slides = document.querySelectorAll('.timeline-slider-slide');
-            slides.forEach(slide => {
-                addSlideEventListeners(slide);
-            });
-
-            function addSlideEventListeners(slide) {
-                const uploadButtons = slide.querySelectorAll('.upload-image-button');
-                const removeButton = slide.querySelector('.remove-slide');
-
-                uploadButtons.forEach(button => {
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        handleImageUpload(button);
-                    });
-                });
-
-                if (removeButton) {
-                    removeButton.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        slide.remove();
-                    });
+            wrapper.addEventListener('click', function(event) {
+                const slide = event.target.closest('.timeline-slider-slide');
+                if (!slide) {
+                    return;
                 }
 
-                const accordionButton = slide.querySelector('.accordion-toggle2');
-                const accordionContent = slide.querySelector('.accordion-content2');
-                accordionButton.addEventListener('click', function() {
-                    accordionContent.style.display = accordionContent.style.display === 'none' ? 'block' : 'none';
-                });
-            }
+                const toggleButton = event.target.closest('.accordion-toggle2');
+                if (toggleButton) {
+                    const content = slide.querySelector('.accordion-content2');
+                    const shouldOpen = content.style.display === 'none';
+                    content.style.display = shouldOpen ? 'block' : 'none';
+                    toggleButton.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+                    return;
+                }
+
+                if (event.target.closest('.add-timeline-images')) {
+                    openImageLibrary(slide, null);
+                    return;
+                }
+
+                const changeButton = event.target.closest('.change-timeline-image');
+                if (changeButton) {
+                    openImageLibrary(slide, changeButton.closest('.timeline-image-row'));
+                    return;
+                }
+
+                const removeImageButton = event.target.closest('.remove-timeline-image');
+                if (removeImageButton) {
+                    removeImageButton.closest('.timeline-image-row').remove();
+                    return;
+                }
+
+                if (event.target.closest('.remove-slide')) {
+                    slide.remove();
+                }
+            });
         });
     </script>
     <?php
@@ -1587,26 +1765,82 @@ add_action("add_meta_boxes", "add_custom_meta_boxes_for_timeline");
 
 // Save the meta box data
 function save_timeline_slider($post_id) {
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) 
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return;
-
-    if (isset($_POST['timeline_slider'])) 
-    {
-        // Get the array from the POST data
-        $timlineslider_data = $_POST['timeline_slider'];
-         // Re-index the array to ensure consistent numeric keys
-         $timlineslider_data = array_values($timlineslider_data);
-        // If the slider data is empty, delete the meta
-        if (empty($timlineslider_data)) {
-            delete_post_meta($post_id, 'timeline_slider_images');
-        } else {
-            // Otherwise, update the post meta with the slider data
-            update_post_meta($post_id, 'timeline_slider_images', $timlineslider_data);
-        }
-    }else {
-        delete_post_meta($post_id, 'timeline_slider_images');
     }
-    
+
+    if (wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (
+        !isset($_POST['zad_timeline_slider_nonce']) ||
+        !wp_verify_nonce(
+            sanitize_text_field(wp_unslash($_POST['zad_timeline_slider_nonce'])),
+            'zad_save_timeline_slider'
+        )
+    ) {
+        return;
+    }
+
+    $raw_slides = isset($_POST['timeline_slider'])
+        ? wp_unslash($_POST['timeline_slider'])
+        : [];
+    $timeline_slider_data = [];
+
+    if (is_array($raw_slides)) {
+        foreach ($raw_slides as $raw_slide) {
+            if (!is_array($raw_slide)) {
+                continue;
+            }
+
+            $images = [];
+            if (!empty($raw_slide['images']) && is_array($raw_slide['images'])) {
+                foreach ($raw_slide['images'] as $image_url) {
+                    $image_url = esc_url_raw($image_url);
+                    if ($image_url && !in_array($image_url, $images, true)) {
+                        $images[] = $image_url;
+                    }
+                }
+            }
+
+            // Accept the legacy field if an older browser submission still
+            // sends it, then save both formats for backward compatibility.
+            if (empty($images) && !empty($raw_slide['image'])) {
+                $legacy_image = esc_url_raw($raw_slide['image']);
+                if ($legacy_image) {
+                    $images[] = $legacy_image;
+                }
+            }
+
+            $clean_slide = [
+                'image'         => $images[0] ?? '',
+                'images'        => $images,
+                'title'         => sanitize_text_field($raw_slide['title'] ?? ''),
+                'title_ar'      => sanitize_text_field($raw_slide['title_ar'] ?? ''),
+                'description'   => sanitize_textarea_field($raw_slide['description'] ?? ''),
+                'description_ar'=> sanitize_textarea_field($raw_slide['description_ar'] ?? ''),
+                'year'          => sanitize_text_field($raw_slide['year'] ?? ''),
+            ];
+
+            if (
+                !empty($clean_slide['images']) ||
+                $clean_slide['title'] !== '' ||
+                $clean_slide['title_ar'] !== '' ||
+                $clean_slide['description'] !== '' ||
+                $clean_slide['description_ar'] !== '' ||
+                $clean_slide['year'] !== ''
+            ) {
+                $timeline_slider_data[] = $clean_slide;
+            }
+        }
+    }
+
+    if (empty($timeline_slider_data)) {
+        delete_post_meta($post_id, 'timeline_slider_images');
+    } else {
+        update_post_meta($post_id, 'timeline_slider_images', $timeline_slider_data);
+    }
 }
 add_action('save_post', 'save_timeline_slider');
 
@@ -3155,3 +3389,190 @@ function save_privacy_policy_metabox($post_id) {
 }
 add_action('save_post', 'save_privacy_policy_metabox');
 
+/* =========================================================
+ * ZAD Maintenance Mode
+ * Adds: Settings → Maintenance Mode
+ * ========================================================= */
+
+/**
+ * Add Maintenance Mode page under Settings
+ */
+function zad_add_maintenance_settings_page() {
+    add_options_page(
+        'Maintenance Mode',
+        'Maintenance Mode',
+        'manage_options',
+        'zad-maintenance-mode',
+        'zad_maintenance_settings_page'
+    );
+}
+add_action('admin_menu', 'zad_add_maintenance_settings_page');
+
+
+/**
+ * Register setting
+ */
+function zad_register_maintenance_setting() {
+    register_setting(
+        'zad_maintenance_settings',
+        'zad_maintenance_mode'
+    );
+}
+add_action('admin_init', 'zad_register_maintenance_setting');
+
+
+/**
+ * Admin settings page
+ */
+function zad_maintenance_settings_page() {
+    ?>
+    <div class="wrap">
+
+        <h1>Website Maintenance Mode</h1>
+
+        <form method="post" action="options.php">
+
+            <?php settings_fields('zad_maintenance_settings'); ?>
+
+            <table class="form-table">
+
+                <tr>
+                    <th scope="row">
+                        Maintenance Mode
+                    </th>
+
+                    <td>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="zad_maintenance_mode"
+                                value="1"
+                                <?php checked(1, get_option('zad_maintenance_mode'), true); ?>
+                            >
+
+                            Enable Maintenance Mode
+                        </label>
+
+                        <p class="description">
+                            Administrators will continue to see the normal website.
+                            Visitors will see the maintenance page.
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+            <?php submit_button('Save Maintenance Setting'); ?>
+
+        </form>
+
+    </div>
+    <?php
+}
+
+
+/**
+ * Show maintenance page to visitors
+ */
+function zad_maintenance_mode() {
+
+    // Do not affect WP Admin
+    if (is_admin()) {
+        return;
+    }
+
+    // Allow logged-in administrators to see the normal website
+    if (current_user_can('manage_options')) {
+        return;
+    }
+
+    // Check whether maintenance mode is enabled
+    if (get_option('zad_maintenance_mode') != '1') {
+        return;
+    }
+
+    // Send proper 503 response
+    status_header(503);
+    nocache_headers();
+    header('Retry-After: 3600');
+
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Website Under Maintenance</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background: #ffffff;
+                color: #333333;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                min-height: 100vh;
+            }
+
+            .maintenance-container {
+                text-align: center;
+                padding: 40px 20px;
+                max-width: 650px;
+            }
+
+            .maintenance-container h1 {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+
+            .maintenance-container p {
+                font-size: 18px;
+                line-height: 1.6;
+                color: #666666;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="maintenance-container">
+
+            <h1>Website Under Maintenance</h1>
+
+            <p>
+                We are currently performing scheduled maintenance
+                and improvements.
+            </p>
+
+            <p>
+                Please check back shortly.
+            </p>
+
+        </div>
+
+    </body>
+
+    </html>
+
+    <?php
+
+    exit;
+}
+
+add_action('template_redirect', 'zad_maintenance_mode');
