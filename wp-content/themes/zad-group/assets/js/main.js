@@ -8,48 +8,27 @@ window.addEventListener("scroll", function () {
   }
 });
 
-if (typeof Swiper !== "undefined" && document.querySelector(".mySwiper")) {
-  document.querySelectorAll(".historyImageSwiper").forEach(function (sliderElement) {
-    var imageSlides = sliderElement.querySelectorAll(".swiper-slide");
-    var nextButton = sliderElement.querySelector(".history-image-next");
-    var previousButton = sliderElement.querySelector(".history-image-prev");
-    var pagination = sliderElement.querySelector(".history-image-pagination");
-    var imageSliderOptions = {
-      slidesPerView: 1,
-      spaceBetween: 0,
-      nested: true,
-      loop: imageSlides.length > 1,
-      watchOverflow: true,
-      observer: true,
-      observeParents: true,
-    };
+if (typeof Swiper !== "undefined" && document.querySelector(".history-main-swiper")) {
+  var historySliderElement = document.querySelector(".history-main-swiper");
+  var historySlideCount = historySliderElement.querySelectorAll(
+    ".history-main-wrapper > .history-card-slide"
+  ).length;
 
-    if (nextButton && previousButton) {
-      imageSliderOptions.navigation = {
-        nextEl: nextButton,
-        prevEl: previousButton,
-      };
-    }
-
-    if (pagination) {
-      imageSliderOptions.pagination = {
-        el: pagination,
-        clickable: true,
-      };
-    }
-
-    new Swiper(sliderElement, imageSliderOptions);
-  });
-
-  var historySliderElement = document.querySelector(".mySwiper");
   var historySwiper = new Swiper(historySliderElement, {
     slidesPerView: "auto",
-    spaceBetween: 30,
+    spaceBetween: 44,
+    loop: historySlideCount > 1,
+    speed: 900,
     watchOverflow: true,
-    navigation: {
-      nextEl: historySliderElement.querySelector(".history-main-next"),
-      prevEl: historySliderElement.querySelector(".history-main-prev"),
-    },
+    grabCursor: historySlideCount > 1,
+    autoplay:
+      historySlideCount > 1
+        ? {
+            delay: 4500,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }
+        : false,
     keyboard: {
       enabled: true,
       onlyInViewport: true,
