@@ -66,12 +66,41 @@ $lang = $current_language;
     </div>
   </section>
 
-<?php if ( is_active_sidebar( 'below-sidebar' ) ) : ?>
+  <section class="about-mission-section" aria-label="<?php echo esc_attr($mission_heading_field_content); ?>">
+    <div class="container">
+      <div class="row g-4 align-items-stretch">
+        <div class="col-lg-6">
+          <div class="about-mission-card about-mission-card--content">
+            <?php if ( is_active_sidebar( 'below-sidebar' ) ) : ?>
+              <?php dynamic_sidebar( 'below-sidebar' ); ?>
+            <?php else : ?>
+              <div class="about-mission-fallback">
+                <?php if (!empty($mission_small_title_field_content)) : ?>
+                  <p class="text-primary fw-bold mb-2"><?php echo esc_html($mission_small_title_field_content); ?></p>
+                <?php endif; ?>
+                <?php if (!empty($mission_heading_field_content)) : ?>
+                  <h2 class="text-primary fw-bold"><?php echo esc_html($mission_heading_field_content); ?></h2>
+                <?php endif; ?>
+                <?php if (!empty($mission_sub_heading_field_content)) : ?>
+                  <p class="mb-0"><?php echo esc_html($mission_sub_heading_field_content); ?></p>
+                <?php endif; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+        </div>
 
-    <div id="secondary-below-sidebar" class="widget-area about-mission-cards">
-        <?php dynamic_sidebar( 'below-sidebar' ); ?>
-    </div><!-- #secondary-below-sidebar -->
-<?php endif; ?>
+        <div class="col-lg-6">
+          <div class="about-mission-card about-mission-card--image">
+            <img
+              src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/aboutHeroImg.png'); ?>"
+              alt="<?php echo esc_attr($mission_heading_field_content ?: get_the_title()); ?>"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="timeline-slider bg-black py-5">
     <div class="container text-center pb-4 pt-5">
