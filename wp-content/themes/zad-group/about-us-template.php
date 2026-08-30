@@ -30,9 +30,8 @@ $lang = $current_language;
  
   $about_bottom_banner = null;
 
-  // The dedicated About image is now used as the full-width top banner.
-  // Existing banner-manager content remains the fallback, so no migration is
-  // required on sites that have not filled the dedicated field yet.
+  // The dedicated About image is the new image-only banner. The existing
+  // banner-manager image remains attached to the "From All Corners" section.
   $about_top_banner = get_post_meta($page_id, '_about_hero_background_image', true);
 
   foreach ($banners as $banner) {
@@ -43,18 +42,25 @@ $lang = $current_language;
       
   }
 
-  if (empty($about_top_banner)) {
-      $about_top_banner = !empty($about_bottom_banner)
-          ? $about_bottom_banner
-          : get_template_directory_uri() . '/assets/images/cornerBannerimg.png';
-  }
+  $about_story_banner = !empty($about_bottom_banner)
+      ? $about_bottom_banner
+      : get_template_directory_uri() . '/assets/images/cornerBannerimg.png';
 
 ?>
 
+  <?php if (!empty($about_top_banner)) : ?>
+    <section class="about-top-banner" aria-label="<?php echo esc_attr(get_the_title()); ?>">
+      <img
+        src="<?php echo esc_url($about_top_banner); ?>"
+        alt="<?php echo esc_attr(get_the_title()); ?>"
+        class="about-top-banner__image"
+      />
+    </section>
+  <?php endif; ?>
 
   <section class="about-full-banner position-relative">
     <img
-      src="<?php echo esc_url($about_top_banner); ?>"
+      src="<?php echo esc_url($about_story_banner); ?>"
       alt="<?php echo esc_attr(get_the_title()); ?>"
       class="about-full-banner__image"
     />
